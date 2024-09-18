@@ -1,7 +1,15 @@
 package com.example.practica04.navigation
 
-object Rutas {
-    const val listaProductos = "listaProductos"
-    const val agregarProducto = "agregarProducto"
-    const val editarProducto = "editarProducto"
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+object Home
+
+@Serializable
+object ListaProductos
+
+@Serializable
+object FormularioProductos
+
+@Serializable
+object Presentacion

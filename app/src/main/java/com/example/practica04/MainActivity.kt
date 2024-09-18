@@ -17,18 +17,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        enableEdgeToEdge()
+
         // Instancia del viewModel.
         val viewModel: ProductoViewModel = ProductoViewModel()
-
-        val agregarProductoViewModel: AgregarProductoViewModel = AgregarProductoViewModel()
-
-        val editarProductoViewModel: EditarProductoViewModel = EditarProductoViewModel()
 
         // Establecer el contenido de la aplicación.
         setContent {
             Practica04Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    NavManager(viewModel = viewModel, agregarProductoViewModel = agregarProductoViewModel, editarProductoViewModel = editarProductoViewModel, modifier = Modifier.padding(innerPadding))
+                    NavManager(viewModel = viewModel, modifier = Modifier.padding(innerPadding))
                 }
             }
         }
