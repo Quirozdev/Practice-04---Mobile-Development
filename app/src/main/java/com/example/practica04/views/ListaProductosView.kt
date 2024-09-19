@@ -1,6 +1,5 @@
-package com.example.practica04
+package com.example.practica04.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -9,14 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,11 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.practica04.viewmodels.ProductoViewModel
+import com.example.practica04.R
 import com.example.practica04.navigation.FormularioProductos
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,7 +100,7 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                         items(estado.productos) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                                    horizontalArrangement = Arrangement.SpaceAround,
                                     modifier = Modifier
                                         .border(
                                             shape = RoundedCornerShape(16.dp),
@@ -111,8 +110,6 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                                         .padding(24.dp)
                                         .fillParentMaxWidth()
                                 ) {
-                                    Image(painter = painterResource(id = it.imagen), contentDescription = "Icono Producto", modifier = Modifier
-                                        .size(120.dp))
                                     Column {
                                         Text(
                                             text = it.nombre,
@@ -131,6 +128,22 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                                             fontSize = 24.sp,
                                             fontWeight = FontWeight.Bold,
                                             color = colorResource(id = R.color.white))
+                                    }
+                                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                        SmallFloatingActionButton(
+                                            onClick = { },
+                                            containerColor = colorResource(id = R.color.azul_oscuro_ligero),
+                                            contentColor = Color.White,
+                                        ) {
+                                            Icon(Icons.Filled.Edit, "Editar producto")
+                                        }
+                                        SmallFloatingActionButton(
+                                            onClick = { },
+                                            containerColor = Color.Red,
+                                            contentColor = Color.White,
+                                        ) {
+                                            Icon(Icons.Filled.Delete, "Eliminar producto")
+                                        }
                                     }
                                 }
                         }

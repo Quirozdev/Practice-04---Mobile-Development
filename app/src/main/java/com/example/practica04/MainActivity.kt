@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.practica04.navigation.NavManager
 import com.example.practica04.ui.theme.Practica04Theme
+import com.example.practica04.viewmodels.ProductoViewModel
 
 class MainActivity : ComponentActivity() {
 

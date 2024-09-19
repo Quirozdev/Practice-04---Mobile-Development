@@ -2,17 +2,14 @@ package com.example.practica04.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.practica04.FormularioProductosView
-import com.example.practica04.HomeView
-import com.example.practica04.ListaProductosView
-import com.example.practica04.PresentacionView
-import com.example.practica04.ProductoViewModel
-import java.text.Normalizer.Form
+import com.example.practica04.views.FormularioProductosView
+import com.example.practica04.views.HomeView
+import com.example.practica04.views.ListaProductosView
+import com.example.practica04.views.PresentacionView
+import com.example.practica04.viewmodels.ProductoViewModel
 
 @Composable
 fun NavManager(viewModel: ProductoViewModel, modifier: Modifier) {

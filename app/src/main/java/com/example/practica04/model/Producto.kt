@@ -1,4 +1,4 @@
-package com.example.practica04
+package com.example.practica04.model
 
 data class Producto(
     val id: Int,
@@ -6,5 +6,4 @@ data class Producto(
     val descripcion: String,
     val precio: Int,
     val fecha: String,
-    val imagen: Int
 )

@@ -1,4 +1,4 @@
-package com.example.practica04
+package com.example.practica04.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,15 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,12 +43,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
-import com.example.practica04.navigation.FormularioProductos
+import com.example.practica04.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -65,7 +66,7 @@ fun FormularioProductosView(navController: NavController, modifier: Modifier = M
                     titleContentColor = colorResource(id = R.color.azul_muy_oscuro)
                 ),
                 title = {
-                    Text(text = "Registrar Producto", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
+                    Text(text = "Registrar Producto", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineLarge)
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -82,7 +83,7 @@ fun FormularioProductosView(navController: NavController, modifier: Modifier = M
     ) { innerPadding ->
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly, modifier = modifier.fillMaxSize().padding(innerPadding).background(color = colorResource(id = R.color.azul_medio_oscuro))) {
             Formulario()
-            GrupoBotones()
+            Boton(texto = "Registrar", colorBoton = colorResource(id = R.color.amarilloso), colorTexto = Color.White)
         }
     }
 }
@@ -95,16 +96,40 @@ fun CampoTexto(label: String, textArea: Boolean = false, icono: Int, modifier: M
 
     Row(modifier = modifier) {
         Image(painter = painterResource(id = icono), contentDescription = "Icono", modifier = Modifier
-            .size(60.dp)
+            .size(50.dp)
             .padding(top = 10.dp))
-        OutlinedTextField(value = valor, onValueChange = { valor = it }, label = { Text(label) }, modifier = if (textArea) Modifier.height(200.dp) else Modifier, colors = OutlinedTextFieldDefaults.colors(
+        OutlinedTextField(value = valor, onValueChange = { valor = it }, label = { Text(text = label) }, modifier = if (textArea) Modifier.height(200.dp) else Modifier, colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = colorResource(id = R.color.amarilloso),
             unfocusedBorderColor = Color.Gray,
             focusedLabelColor = colorResource(id = R.color.amarilloso),
-            unfocusedLabelColor = colorResource(id = R.color.azul_oscuro_ligero),
-            unfocusedContainerColor = colorResource(id = R.color.white),
-            focusedContainerColor = colorResource(id = R.color.white)
-        ))
+            unfocusedLabelColor = colorResource(id = R.color.white),
+            unfocusedContainerColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent
+        ), textStyle = TextStyle(Color.White)
+        )
+    }
+}
+
+@Composable
+fun CampoNumerico(label: String, icono: Int, modifier: Modifier = Modifier) {
+    var valor by remember {
+        mutableStateOf("")
+    }
+
+    Row(modifier = modifier) {
+        Image(painter = painterResource(id = icono), contentDescription = "Icono", modifier = Modifier
+            .size(50.dp)
+            .padding(top = 10.dp))
+        OutlinedTextField(value = valor, onValueChange = { valor = it }, label = { Text(text = label) }, colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = colorResource(id = R.color.amarilloso),
+            unfocusedBorderColor = Color.Gray,
+            focusedLabelColor = colorResource(id = R.color.amarilloso),
+            unfocusedLabelColor = colorResource(id = R.color.white),
+            unfocusedContainerColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent
+        ), textStyle = TextStyle(Color.White)
+            , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
     }
 }
 
@@ -141,10 +166,11 @@ fun SelectorFecha() {
                 focusedBorderColor = colorResource(id = R.color.amarilloso),
                 unfocusedBorderColor = Color.Gray,
                 focusedLabelColor = colorResource(id = R.color.amarilloso),
-                unfocusedLabelColor = colorResource(id = R.color.azul_oscuro_ligero),
-                unfocusedContainerColor = colorResource(id = R.color.white),
-                focusedContainerColor = colorResource(id = R.color.white)
-            )
+                unfocusedLabelColor = colorResource(id = R.color.white),
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent
+            ),
+            textStyle = TextStyle(Color.White)
         )
 
         if (showDatePicker) {
@@ -175,7 +201,7 @@ fun convertirMillisAFecha(millis: Long): String {
 fun Formulario(modifier: Modifier = Modifier) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         CampoTexto(label = "Nombre", icono = R.drawable.icono_nombre)
-        CampoTexto(label = "Precio", icono = R.drawable.icono_precio)
+        CampoNumerico(label = "Precio", icono = R.drawable.icono_precio)
         CampoTexto(label = "Descripción", textArea = true, icono = R.drawable.icono_descripcion)
         SelectorFecha()
     }
@@ -185,13 +211,5 @@ fun Formulario(modifier: Modifier = Modifier) {
 fun Boton(texto: String, colorBoton: Color, colorTexto: Color, modifier: Modifier = Modifier) {
     Button(onClick = { }, modifier = modifier, shape = RoundedCornerShape(4.dp), contentPadding = PaddingValues(40.dp, 18.dp), colors = ButtonColors(containerColor = colorBoton, contentColor = colorTexto, disabledContainerColor = colorBoton, disabledContentColor = colorTexto)) {
         Text(text = texto, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-    }
-}
-
-@Composable
-fun GrupoBotones(modifier: Modifier = Modifier) {
-    Row(horizontalArrangement = Arrangement.SpaceAround, modifier = modifier.fillMaxWidth()) {
-        Boton(texto = "Registrar", colorBoton = colorResource(id = R.color.amarilloso), colorTexto = Color.White)
-        Boton(texto = "Cancelar", colorBoton = Color.Red, colorTexto = Color.White)
     }
 }
