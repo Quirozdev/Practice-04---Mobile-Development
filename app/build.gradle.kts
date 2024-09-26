@@ -3,7 +3,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    kotlin("plugin.serialization") version "2.0.20"
     id("kotlin-kapt")
+    id("androidx.room")
 }
 
 
@@ -50,6 +52,10 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 

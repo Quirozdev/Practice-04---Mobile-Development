@@ -12,4 +12,7 @@ object ListaProductos
 object FormularioProductos
 
 @Serializable
+data class EditarProducto(val productId: Int)
+
+@Serializable
 object Presentacion

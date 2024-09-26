@@ -28,21 +28,33 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.practica04.viewmodels.ProductoViewModel
 import com.example.practica04.R
+import com.example.practica04.model.Producto
+import com.example.practica04.navigation.EditarProducto
 import com.example.practica04.navigation.FormularioProductos
+import com.example.practica04.navigation.Home
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListaProductosView(viewModel: ProductoViewModel, navController: NavController, modifier: Modifier = Modifier) {
+    var productIdToDelete by remember { mutableStateOf(0) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -55,7 +67,7 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()
+                        navController.navigate(Home)
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -88,6 +100,10 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                 if (estado.estaCargando) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
+                    }
+                } else if (estado.productos.isEmpty()) {
+                    Column(verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
+                        Text(text = "¡No hay productos por mostrar, trata de agregar algunos!", fontSize = 20.sp, textAlign = TextAlign.Center)
                     }
                 } else {
                     // Mostrar los productos.
@@ -131,14 +147,19 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                                     }
                                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                         SmallFloatingActionButton(
-                                            onClick = { },
+                                            onClick = {
+                                                navController.navigate(EditarProducto(productId = it.id))
+                                            },
                                             containerColor = colorResource(id = R.color.azul_oscuro_ligero),
                                             contentColor = Color.White,
                                         ) {
                                             Icon(Icons.Filled.Edit, "Editar producto")
                                         }
                                         SmallFloatingActionButton(
-                                            onClick = { },
+                                            onClick = {
+                                                showDeleteDialog = true
+                                                productIdToDelete = it.id
+                                            },
                                             containerColor = Color.Red,
                                             contentColor = Color.White,
                                         ) {
@@ -148,6 +169,19 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                                 }
                         }
                     }
+                    Alerta(
+                        dialogTitle = "Borrar producto",
+                        dialogText = "¿Estás segur@ de querer borrar este producto?",
+                        onDismissRequest = {
+                            println(productIdToDelete)
+                            showDeleteDialog = false
+                        },
+                        onConfirmation = {
+                            viewModel.deleteProduct(Producto(productIdToDelete, "", "", 0, ""))
+                            showDeleteDialog = false
+                        },
+                        show = showDeleteDialog
+                    )
                 }
             }
     }

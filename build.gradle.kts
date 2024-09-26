@@ -6,4 +6,6 @@ plugins {
     kotlin("jvm") version "2.0.20" // or kotlin("multiplatform") or any other kotlin plugin
     kotlin("plugin.serialization") version "2.0.20"
     id("org.jetbrains.kotlin.kapt") version "1.9.22"
+    val room_version = "2.6.1"
+    id("androidx.room") version "$room_version" apply false
 }
