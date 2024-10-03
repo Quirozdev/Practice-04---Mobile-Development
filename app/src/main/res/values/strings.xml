@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Practica04</string>
+    <string name="dismiss">Cancelar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="delete_product">Borrar Producto</string>
+    <string name="cant_be_undone">Esta acción no se puede deshacer</string>
 </resources>

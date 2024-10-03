@@ -1,5 +1,6 @@
 package com.example.practica04.views
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +36,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.practica04.viewmodels.ProductoViewModel
 import com.example.practica04.R
+import com.example.practica04.dialogs.SimpleDialog
 import com.example.practica04.model.Producto
 import com.example.practica04.navigation.EditarProducto
 import com.example.practica04.navigation.FormularioProductos
@@ -51,7 +55,8 @@ import com.example.practica04.navigation.Home
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListaProductosView(viewModel: ProductoViewModel, navController: NavController, modifier: Modifier = Modifier) {
-    var productIdToDelete by remember { mutableStateOf(0) }
+    var context = LocalContext.current
+    var productToDelete: Producto by remember { mutableStateOf(Producto()) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
 
@@ -158,7 +163,7 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                                         SmallFloatingActionButton(
                                             onClick = {
                                                 showDeleteDialog = true
-                                                productIdToDelete = it.id
+                                                productToDelete = it
                                             },
                                             containerColor = Color.Red,
                                             contentColor = Color.White,
@@ -169,20 +174,39 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                                 }
                         }
                     }
-                    Alerta(
-                        dialogTitle = "Borrar producto",
-                        dialogText = "¿Estás segur@ de querer borrar este producto?",
-                        onDismissRequest = {
-                            println(productIdToDelete)
-                            showDeleteDialog = false
-                        },
-                        onConfirmation = {
-                            viewModel.deleteProduct(Producto(productIdToDelete, "", "", 0, ""))
-                            showDeleteDialog = false
-                        },
-                        show = showDeleteDialog
-                    )
+                    if (showDeleteDialog) {
+                        OpenDeleteDialog(
+                            onDismissRequest = {
+                                showDeleteDialog = false
+                                productToDelete = Producto()
+                            },
+                            onConfirmation = {
+                                try {
+                                    viewModel.deleteProduct(productToDelete)
+                                    Toast.makeText(context, "Producto eliminado exitosamente", Toast.LENGTH_SHORT).show()
+                                } catch (e: Exception) {
+                                    println(e)
+                                } finally {
+                                    showDeleteDialog = false
+                                }
+                            }
+                        )
+                    }
                 }
             }
     }
+}
+
+
+@Composable
+fun OpenDeleteDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit
+) {
+    SimpleDialog(
+        onDismissRequest = { onDismissRequest() },
+        onConfirmation = { onConfirmation() },
+        dialogTitle = stringResource(R.string.delete_product),
+        dialogText = stringResource(R.string.cant_be_undone)
+    )
 }

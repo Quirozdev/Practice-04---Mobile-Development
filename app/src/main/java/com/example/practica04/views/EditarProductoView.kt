@@ -1,5 +1,6 @@
 package com.example.practica04.views
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -78,6 +80,7 @@ fun EditarProductoView(productId: Int, navController: NavController, viewModel: 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioEditar(producto: Producto?, viewModel: ProductoViewModel, navController: NavController, modifier: Modifier = Modifier) {
+    var context = LocalContext.current
     var name by remember { mutableStateOf(producto?.nombre ?: "") }
     var price by remember { mutableStateOf(producto?.precio.toString() ?: "") }
     var description by remember { mutableStateOf(producto?.descripcion ?: "") }
@@ -99,16 +102,20 @@ fun FormularioEditar(producto: Producto?, viewModel: ProductoViewModel, navContr
         try {
             if (name.isBlank() || description.isBlank() || selectedDate.isBlank()) {
                 errorMsg = "El nombre, descripción y fecha son requeridos"
-                showErrorDialog = true
+                Toast.makeText(context, "El nombre, descripción y fecha son requeridos", Toast.LENGTH_SHORT).show()
+//                showErrorDialog = true
             } else if (price.toIntOrNull() == null) {
                 errorMsg = "El precio tiene que ser un entero válido"
-                showErrorDialog = true
+                Toast.makeText(context, "El precio tiene que ser un entero válido", Toast.LENGTH_SHORT).show()
+//                showErrorDialog = true
             } else {
                 viewModel.updateProduct(Producto(id = producto?.id!!, nombre = name, descripcion = description, precio = price.toInt(), fecha = selectedDate))
                 navController.navigate(ListaProductos)
+                Toast.makeText(context, "Producto actualizado exitosamente", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             errorMsg = "Algo salió terriblemente mal"
+            Toast.makeText(context, "Algo salió terriblemente mal", Toast.LENGTH_SHORT).show()
         }
     }, modifier = modifier, shape = RoundedCornerShape(4.dp), contentPadding = PaddingValues(40.dp, 18.dp), colors = ButtonColors(containerColor = colorResource(id = R.color.amarilloso), contentColor = Color.White, disabledContainerColor = colorResource(id = R.color.amarilloso), disabledContentColor = Color.White)) {
         Text(text = "Actualizar", fontWeight = FontWeight.Bold, fontSize = 16.sp)

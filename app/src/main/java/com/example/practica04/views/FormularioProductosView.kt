@@ -1,5 +1,6 @@
 package com.example.practica04.views
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,8 +45,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -55,6 +58,7 @@ import androidx.compose.ui.window.Popup
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.practica04.R
+import com.example.practica04.dialogs.SimpleDialog
 import com.example.practica04.model.Producto
 import com.example.practica04.navigation.ListaProductos
 import com.example.practica04.viewmodels.ProductoViewModel
@@ -88,7 +92,10 @@ fun FormularioProductosView(navController: NavController, viewModel: ProductoVie
             )
         }
     ) { innerPadding ->
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly, modifier = modifier.fillMaxSize().padding(innerPadding).background(color = colorResource(id = R.color.azul_medio_oscuro))) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly, modifier = modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .background(color = colorResource(id = R.color.azul_medio_oscuro))) {
             Formulario(viewModel, navController)
         }
     }
@@ -177,6 +184,7 @@ fun convertirMillisAFecha(millis: Long): String {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Formulario(viewModel: ProductoViewModel, navController: NavController, modifier: Modifier = Modifier) {
+    var context = LocalContext.current
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -198,16 +206,20 @@ fun Formulario(viewModel: ProductoViewModel, navController: NavController, modif
         try {
             if (name.isBlank() || description.isBlank() || selectedDate.isBlank()) {
                 errorMsg = "El nombre, descripción y fecha son requeridos"
-                showErrorDialog = true
+                Toast.makeText(context, "El nombre, descripción y fecha son requeridos", Toast.LENGTH_SHORT).show()
+//                showErrorDialog = true
             } else if (price.toIntOrNull() == null) {
                 errorMsg = "El precio tiene que ser un entero válido"
-                showErrorDialog = true
+                Toast.makeText(context, "El precio tiene que ser un entero válido", Toast.LENGTH_SHORT).show()
+//                showErrorDialog = true
             } else {
                 viewModel.addProduct(Producto(nombre = name, descripcion = description, precio = price.toInt(), fecha = selectedDate))
                 navController.navigate(ListaProductos)
+                Toast.makeText(context, "Producto creado exitosamente", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             errorMsg = "Algo salió terriblemente mal"
+            Toast.makeText(context, "Algo salió terriblemente mal", Toast.LENGTH_SHORT).show()
         }
     }, modifier = modifier, shape = RoundedCornerShape(4.dp), contentPadding = PaddingValues(40.dp, 18.dp), colors = ButtonColors(containerColor = colorResource(id = R.color.amarilloso), contentColor = Color.White, disabledContainerColor = colorResource(id = R.color.amarilloso), disabledContentColor = Color.White)) {
         Text(text = "Registrar", fontWeight = FontWeight.Bold, fontSize = 16.sp)

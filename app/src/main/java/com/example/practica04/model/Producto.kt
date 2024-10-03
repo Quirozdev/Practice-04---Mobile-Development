@@ -22,5 +22,5 @@ data class Producto(
     val precio: Int = 0,
 
     @ColumnInfo(name = "fecha")
-    val fecha: String,
+    val fecha: String = "",
 )
