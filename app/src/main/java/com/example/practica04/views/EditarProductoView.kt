@@ -52,11 +52,11 @@ fun EditarProductoView(productId: Int, navController: NavController, viewModel: 
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(id = R.color.amarilloso),
-                    titleContentColor = colorResource(id = R.color.azul_muy_oscuro)
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
                 title = {
-                    Text(text = "Editar Producto", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineLarge)
+                    Text(text = "Editar Producto", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -71,7 +71,7 @@ fun EditarProductoView(productId: Int, navController: NavController, viewModel: 
             )
         }
     ) { innerPadding ->
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly, modifier = modifier.fillMaxSize().padding(innerPadding).background(color = colorResource(id = R.color.azul_medio_oscuro))) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly, modifier = modifier.fillMaxSize().padding(innerPadding).background(MaterialTheme.colorScheme.background)) {
             FormularioEditar(producto = viewModel.getProductById(productId), viewModel, navController)
         }
     }
@@ -117,8 +117,8 @@ fun FormularioEditar(producto: Producto?, viewModel: ProductoViewModel, navContr
             errorMsg = "Algo salió terriblemente mal"
             Toast.makeText(context, "Algo salió terriblemente mal", Toast.LENGTH_SHORT).show()
         }
-    }, modifier = modifier, shape = RoundedCornerShape(4.dp), contentPadding = PaddingValues(40.dp, 18.dp), colors = ButtonColors(containerColor = colorResource(id = R.color.amarilloso), contentColor = Color.White, disabledContainerColor = colorResource(id = R.color.amarilloso), disabledContentColor = Color.White)) {
-        Text(text = "Actualizar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+    }, modifier = modifier, shape = RoundedCornerShape(4.dp), contentPadding = PaddingValues(40.dp, 18.dp), colors = ButtonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary, disabledContainerColor = MaterialTheme.colorScheme.inversePrimary, disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer)) {
+        Text(text = "Actualizar", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
     }
     Alerta(
         dialogTitle = "Error",

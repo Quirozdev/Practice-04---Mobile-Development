@@ -64,8 +64,8 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(id = R.color.amarilloso),
-                    titleContentColor = colorResource(id = R.color.azul_muy_oscuro)
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
                 title = {
                     Text(text = "Productos", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
@@ -87,15 +87,15 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                 onClick = {
                     navController.navigate(FormularioProductos)
                 },
-                containerColor = colorResource(id = R.color.amarilloso),
-                contentColor = colorResource(id = R.color.azul_muy_oscuro),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
             ) {
                 Icon(Icons.Filled.Add, "Agregar producto")
             }
         }
     ) { innerPadding ->
             Column(
-                modifier = Modifier.fillMaxSize().padding(innerPadding).background(color = colorResource(id = R.color.azul_medio_oscuro)),
+                modifier = Modifier.fillMaxSize().padding(innerPadding).background(color = MaterialTheme.colorScheme.background),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Estado del viewModel.
@@ -108,7 +108,7 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                     }
                 } else if (estado.productos.isEmpty()) {
                     Column(verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
-                        Text(text = "¡No hay productos por mostrar, trata de agregar algunos!", fontSize = 20.sp, textAlign = TextAlign.Center)
+                        Text(text = "¡No hay productos por mostrar, trata de agregar algunos!", style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center)
                     }
                 } else {
                     // Mostrar los productos.
@@ -126,7 +126,7 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                                         .border(
                                             shape = RoundedCornerShape(16.dp),
                                             width = 2.dp,
-                                            color = colorResource(id = R.color.azul_oscuro_ligero)
+                                            color = MaterialTheme.colorScheme.secondary
                                         )
                                         .padding(24.dp)
                                         .fillParentMaxWidth()
@@ -136,27 +136,27 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                                             text = it.nombre,
                                             style = MaterialTheme.typography.headlineSmall,
                                             fontWeight = FontWeight.Bold,
-                                            color = colorResource(id = R.color.amarilloso)
+                                            color = MaterialTheme.colorScheme.primary
                                         )
                                         Text(text = "Fecha registro: " + it.fecha,
                                             style = MaterialTheme.typography.labelMedium,
                                             fontWeight = FontWeight.ExtraLight,
-                                            color = Color.Gray
+                                            color = MaterialTheme.colorScheme.secondary
                                         )
                                         Text(text = it.descripcion,
-                                            color = colorResource(id = R.color.white))
+                                            color = MaterialTheme.colorScheme.onBackground)
                                         Text(text = "$" + it.precio.toString(),
-                                            fontSize = 24.sp,
+                                            style = MaterialTheme.typography.titleLarge,
                                             fontWeight = FontWeight.Bold,
-                                            color = colorResource(id = R.color.white))
+                                            color = MaterialTheme.colorScheme.onBackground)
                                     }
                                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                         SmallFloatingActionButton(
                                             onClick = {
                                                 navController.navigate(EditarProducto(productId = it.id))
                                             },
-                                            containerColor = colorResource(id = R.color.azul_oscuro_ligero),
-                                            contentColor = Color.White,
+                                            containerColor = MaterialTheme.colorScheme.surface,
+                                            contentColor = MaterialTheme.colorScheme.onSurface,
                                         ) {
                                             Icon(Icons.Filled.Edit, "Editar producto")
                                         }
@@ -165,8 +165,8 @@ fun ListaProductosView(viewModel: ProductoViewModel, navController: NavControlle
                                                 showDeleteDialog = true
                                                 productToDelete = it
                                             },
-                                            containerColor = Color.Red,
-                                            contentColor = Color.White,
+                                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                                            contentColor = MaterialTheme.colorScheme.onErrorContainer,
                                         ) {
                                             Icon(Icons.Filled.Delete, "Eliminar producto")
                                         }

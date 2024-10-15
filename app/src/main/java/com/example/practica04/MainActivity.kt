@@ -9,13 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.room.Room
-import androidx.room.RoomDatabase
+import com.example.compose.Practica04Theme
 import com.example.practica04.navigation.NavManager
 import com.example.practica04.room.ProductDatabase
-import com.example.practica04.room.ProductDatabase_Impl
-import com.example.practica04.room.ProductsDatabaseDao
-import com.example.practica04.room.ProductsDatabaseDao_Impl
-import com.example.practica04.ui.theme.Practica04Theme
 import com.example.practica04.viewmodels.ProductoViewModel
 
 class MainActivity : ComponentActivity() {

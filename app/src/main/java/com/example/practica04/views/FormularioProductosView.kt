@@ -73,11 +73,11 @@ fun FormularioProductosView(navController: NavController, viewModel: ProductoVie
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(id = R.color.amarilloso),
-                    titleContentColor = colorResource(id = R.color.azul_muy_oscuro)
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
                 title = {
-                    Text(text = "Registrar Producto", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineLarge)
+                    Text(text = "Registrar Producto", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -95,7 +95,7 @@ fun FormularioProductosView(navController: NavController, viewModel: ProductoVie
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly, modifier = modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .background(color = colorResource(id = R.color.azul_medio_oscuro))) {
+            .background(MaterialTheme.colorScheme.background)) {
             Formulario(viewModel, navController)
         }
     }
@@ -108,13 +108,13 @@ fun CampoTexto(label: String, value: String, onValueChange: (String) -> Unit, ke
             .size(50.dp)
             .padding(top = 10.dp))
         OutlinedTextField(value = value, onValueChange = onValueChange, label = { Text(text = label) }, keyboardOptions = keyboardOptions, modifier = if (textArea) Modifier.height(200.dp) else Modifier, colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorResource(id = R.color.amarilloso),
-            unfocusedBorderColor = Color.Gray,
-            focusedLabelColor = colorResource(id = R.color.amarilloso),
-            unfocusedLabelColor = colorResource(id = R.color.white),
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.inversePrimary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent
-        ), textStyle = TextStyle(Color.White)
+        )
         )
     }
 }
@@ -147,14 +147,13 @@ fun SelectorFecha(datePickerState: DatePickerState, selectedDate: String) {
                 .height(64.dp)
                 .fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = colorResource(id = R.color.amarilloso),
-                unfocusedBorderColor = Color.Gray,
-                focusedLabelColor = colorResource(id = R.color.amarilloso),
-                unfocusedLabelColor = colorResource(id = R.color.white),
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.inversePrimary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent
             ),
-            textStyle = TextStyle(Color.White)
         )
 
         if (showDatePicker) {
@@ -221,8 +220,8 @@ fun Formulario(viewModel: ProductoViewModel, navController: NavController, modif
             errorMsg = "Algo salió terriblemente mal"
             Toast.makeText(context, "Algo salió terriblemente mal", Toast.LENGTH_SHORT).show()
         }
-    }, modifier = modifier, shape = RoundedCornerShape(4.dp), contentPadding = PaddingValues(40.dp, 18.dp), colors = ButtonColors(containerColor = colorResource(id = R.color.amarilloso), contentColor = Color.White, disabledContainerColor = colorResource(id = R.color.amarilloso), disabledContentColor = Color.White)) {
-        Text(text = "Registrar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+    }, modifier = modifier, shape = RoundedCornerShape(4.dp), contentPadding = PaddingValues(40.dp, 18.dp), colors = ButtonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary, disabledContainerColor = MaterialTheme.colorScheme.inversePrimary, disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer)) {
+        Text(text = "Registrar", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
     }
     Alerta(
         dialogTitle = "Error",

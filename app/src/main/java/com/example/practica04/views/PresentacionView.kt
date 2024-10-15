@@ -44,11 +44,11 @@ fun PresentacionView(navController: NavController, modifier: Modifier = Modifier
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(id = R.color.amarilloso),
-                    titleContentColor = colorResource(id = R.color.azul_muy_oscuro)
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
                 title = {
-                    Text(text = "Presentación", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
+                    Text(text = "Presentación", style = MaterialTheme.typography.headlineMedium)
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -66,7 +66,7 @@ fun PresentacionView(navController: NavController, modifier: Modifier = Modifier
         Column(modifier = modifier
             .padding(innerPadding)
             .fillMaxSize()
-            .background(colorResource(R.color.azul_medio_oscuro)), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            .background(MaterialTheme.colorScheme.background), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             InformacionPrincipal(modifier = Modifier.weight(1f))
             InformacionContacto()
         }
@@ -76,20 +76,12 @@ fun PresentacionView(navController: NavController, modifier: Modifier = Modifier
 
 @Composable
 fun Nombre(nombre: String, modifier: Modifier = Modifier) {
-    Text(text = nombre, textAlign = TextAlign.Center, fontSize = 32.sp, color = colorResource(id = R.color.white))
+    Text(text = nombre, textAlign = TextAlign.Center, style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.onBackground)
 }
 
 @Composable
 fun Puesto(puesto: String, modifier: Modifier = Modifier) {
-    Text(text = puesto, textAlign = TextAlign.Center, fontSize = 26.sp, color = colorResource(id = R.color.white), modifier = modifier.drawWithContent {
-        drawContent()
-        drawLine(
-            color = Color(236, 179, 101),
-            start = Offset(0f, size.height),
-            end = Offset(size.width, size.height),
-            strokeWidth = 6f
-        )
-    })
+    Text(text = puesto, textAlign = TextAlign.Center, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onBackground, modifier = modifier)
 }
 
 @Composable
@@ -108,7 +100,7 @@ fun InformacionPrincipal(modifier: Modifier = Modifier) {
 @Composable
 fun InformacionContacto(modifier: Modifier = Modifier) {
     Column(modifier = modifier
-        .background(colorResource(id = R.color.azul_muy_oscuro))
+        .background(MaterialTheme.colorScheme.secondaryContainer)
         .fillMaxWidth()
         .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -130,6 +122,6 @@ fun IconoContacto(idIcono: Int, tipoIcono: String, modifier: Modifier = Modifier
 fun FilaInformacionContacto(idIcono: Int, tipoIcono: String, valor: String, modifier: Modifier = Modifier) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = modifier) {
         IconoContacto(idIcono = idIcono, tipoIcono = tipoIcono)
-        Text(text = valor, textAlign = TextAlign.Center, color = colorResource(id = R.color.white), fontSize = 20.sp)
+        Text(text = valor, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSecondaryContainer, style = MaterialTheme.typography.titleLarge)
     }
 }
