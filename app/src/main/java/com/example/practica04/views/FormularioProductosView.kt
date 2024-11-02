@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -27,12 +28,14 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -41,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,6 +66,7 @@ import com.example.practica04.dialogs.SimpleDialog
 import com.example.practica04.model.Producto
 import com.example.practica04.navigation.ListaProductos
 import com.example.practica04.viewmodels.ProductoViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -69,6 +74,8 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioProductosView(navController: NavController, viewModel: ProductoViewModel, modifier: Modifier = Modifier) {
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -102,12 +109,24 @@ fun FormularioProductosView(navController: NavController, viewModel: ProductoVie
 }
 
 @Composable
-fun CampoTexto(label: String, value: String, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, textArea: Boolean = false, icono: Int, modifier: Modifier = Modifier) {
+fun CampoTexto(label: String, value: String, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, errorMessage: String, textArea: Boolean = false, icono: Int, modifier: Modifier = Modifier) {
+    // si hay un mensaje de error, es porque hay un error
+    val isError = errorMessage.isNotBlank()
+
     Row(modifier = modifier) {
         Image(painter = painterResource(id = icono), contentDescription = "Icono", modifier = Modifier
             .size(50.dp)
             .padding(top = 10.dp))
-        OutlinedTextField(value = value, onValueChange = onValueChange, label = { Text(text = label) }, keyboardOptions = keyboardOptions, modifier = if (textArea) Modifier.height(200.dp) else Modifier, colors = OutlinedTextFieldDefaults.colors(
+        OutlinedTextField(value = value, onValueChange = onValueChange, label = { Text(text = label) }, keyboardOptions = keyboardOptions, modifier = if (textArea) Modifier.height(200.dp) else Modifier, isError = isError, supportingText = {
+            if (isError) {
+                Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+            }
+        }, trailingIcon = {
+            if (isError) {
+                Icon(Icons.Filled.Info,"error", tint = MaterialTheme.colorScheme.error)
+            }
+        },
+            colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.inversePrimary,
             focusedLabelColor = MaterialTheme.colorScheme.primary,
@@ -121,9 +140,10 @@ fun CampoTexto(label: String, value: String, onValueChange: (String) -> Unit, ke
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectorFecha(datePickerState: DatePickerState, selectedDate: String) {
+fun SelectorFecha(datePickerState: DatePickerState, selectedDate: String, errorMessage: String) {
     var showDatePicker by remember { mutableStateOf(false) }
-
+    // si hay un mensaje de error, es porque hay un error
+    val isError = errorMessage.isNotBlank()
     Box(modifier = Modifier
         .offset(x = 28.dp)
         .width(IntrinsicSize.Min)) {
@@ -132,6 +152,11 @@ fun SelectorFecha(datePickerState: DatePickerState, selectedDate: String) {
             onValueChange = {  },
             label = { Text("Fecha de registro") },
             readOnly = true,
+            isError = isError, supportingText = {
+                if (isError) {
+                    Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+                }
+            },
             trailingIcon = {
                 IconButton(onClick = {
                     showDatePicker = !showDatePicker
@@ -144,7 +169,6 @@ fun SelectorFecha(datePickerState: DatePickerState, selectedDate: String) {
                 }
             },
             modifier = Modifier
-                .height(64.dp)
                 .fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -185,32 +209,69 @@ fun convertirMillisAFecha(millis: Long): String {
 fun Formulario(viewModel: ProductoViewModel, navController: NavController, modifier: Modifier = Modifier) {
     var context = LocalContext.current
     var name by remember { mutableStateOf("") }
+    var invalidNameErrorMsg by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
+    var invalidPriceErrorMsg by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var invalidDescriptionErrorMsg by remember { mutableStateOf("") }
     val datePickerState = rememberDatePickerState()
     val selectedDate = datePickerState.selectedDateMillis?.let {
         convertirMillisAFecha(it)
     } ?: ""
+    var invalidDateErrorMsg by remember { mutableStateOf("") }
 
     var errorMsg by remember { mutableStateOf("") }
     var showErrorDialog by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        CampoTexto(label = "Nombre", value = name, icono = R.drawable.icono_nombre, onValueChange = { name = it })
-        CampoTexto(label = "Precio", value = price, icono = R.drawable.icono_precio, onValueChange = { price = it }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
-        CampoTexto(label = "Descripcion", value = description, icono = R.drawable.icono_descripcion, onValueChange = { description = it })
-        SelectorFecha(datePickerState, selectedDate)
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        CampoTexto(label = "Nombre", value = name, icono = R.drawable.icono_nombre, onValueChange = { name = it }, errorMessage = invalidNameErrorMsg)
+        CampoTexto(label = "Precio", value = price, icono = R.drawable.icono_precio, onValueChange = { price = it }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), errorMessage = invalidPriceErrorMsg)
+        CampoTexto(label = "Descripcion", value = description, icono = R.drawable.icono_descripcion, onValueChange = { description = it }, errorMessage = invalidDescriptionErrorMsg)
+        SelectorFecha(datePickerState, selectedDate, invalidDateErrorMsg)
     }
     Button(onClick = {
+        // validaciones
         try {
-            if (name.isBlank() || description.isBlank() || selectedDate.isBlank()) {
-                errorMsg = "El nombre, descripción y fecha son requeridos"
-                Toast.makeText(context, "El nombre, descripción y fecha son requeridos", Toast.LENGTH_SHORT).show()
-//                showErrorDialog = true
+            // flag para ver si hay errores
+            var thereAreErrors = false
+
+            if (name.isBlank()) {
+                invalidNameErrorMsg = "El nombre es requerido"
+                thereAreErrors = true
+            } else {
+                invalidNameErrorMsg = ""
+            }
+
+            if (price.isBlank()) {
+                invalidPriceErrorMsg = "El precio es requerido"
+                thereAreErrors = true
             } else if (price.toIntOrNull() == null) {
-                errorMsg = "El precio tiene que ser un entero válido"
-                Toast.makeText(context, "El precio tiene que ser un entero válido", Toast.LENGTH_SHORT).show()
-//                showErrorDialog = true
+                invalidPriceErrorMsg = "El precio tiene que ser un entero válido"
+                thereAreErrors = true
+            } else if (price.toIntOrNull()!! <= 0) {
+                invalidPriceErrorMsg = "El precio tiene que ser positivo"
+                thereAreErrors = true
+            }
+            else {
+                invalidPriceErrorMsg = ""
+            }
+
+            if (description.isBlank()) {
+                invalidDescriptionErrorMsg = "La descripción es requerida"
+                thereAreErrors = true
+            } else {
+                invalidDescriptionErrorMsg = ""
+            }
+
+            if (selectedDate.isBlank()) {
+                invalidDateErrorMsg = "La fecha es requerida"
+                thereAreErrors = true
+            } else {
+                invalidDateErrorMsg = ""
+            }
+
+            if (thereAreErrors) {
+                Toast.makeText(context, "Por favor, corrige los campos erróneos", Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.addProduct(Producto(nombre = name, descripcion = description, precio = price.toInt(), fecha = selectedDate))
                 navController.navigate(ListaProductos)

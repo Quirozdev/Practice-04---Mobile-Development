@@ -82,32 +82,69 @@ fun EditarProductoView(productId: Int, navController: NavController, viewModel: 
 fun FormularioEditar(producto: Producto?, viewModel: ProductoViewModel, navController: NavController, modifier: Modifier = Modifier) {
     var context = LocalContext.current
     var name by remember { mutableStateOf(producto?.nombre ?: "") }
+    var invalidNameErrorMsg by remember { mutableStateOf("") }
     var price by remember { mutableStateOf(producto?.precio.toString() ?: "") }
+    var invalidPriceErrorMsg by remember { mutableStateOf("") }
     var description by remember { mutableStateOf(producto?.descripcion ?: "") }
+    var invalidDescriptionErrorMsg by remember { mutableStateOf("") }
     val datePickerState = rememberDatePickerState()
     val selectedDate = datePickerState.selectedDateMillis?.let {
         convertirMillisAFecha(it)
     } ?: ""
+    var invalidDateErrorMsg by remember { mutableStateOf("") }
 
     var errorMsg by remember { mutableStateOf("") }
     var showErrorDialog by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        CampoTexto(label = "Nombre", value = name, icono = R.drawable.icono_nombre, onValueChange = { name = it })
-        CampoTexto(label = "Precio", value = price, icono = R.drawable.icono_precio, onValueChange = { price = it }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
-        CampoTexto(label = "Descripcion", value = description, icono = R.drawable.icono_descripcion, onValueChange = { description = it })
-        SelectorFecha(datePickerState, selectedDate)
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        CampoTexto(label = "Nombre", value = name, icono = R.drawable.icono_nombre, onValueChange = { name = it }, errorMessage = invalidNameErrorMsg)
+        CampoTexto(label = "Precio", value = price, icono = R.drawable.icono_precio, onValueChange = { price = it }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), errorMessage = invalidPriceErrorMsg)
+        CampoTexto(label = "Descripcion", value = description, icono = R.drawable.icono_descripcion, onValueChange = { description = it }, errorMessage = invalidDescriptionErrorMsg)
+        SelectorFecha(datePickerState, selectedDate, invalidDateErrorMsg)
     }
     Button(onClick = {
+        // validaciones
         try {
-            if (name.isBlank() || description.isBlank() || selectedDate.isBlank()) {
-                errorMsg = "El nombre, descripción y fecha son requeridos"
-                Toast.makeText(context, "El nombre, descripción y fecha son requeridos", Toast.LENGTH_SHORT).show()
-//                showErrorDialog = true
+            // flag para ver si hay errores
+            var thereAreErrors = false
+
+            if (name.isBlank()) {
+                invalidNameErrorMsg = "El nombre es requerido"
+                thereAreErrors = true
+            } else {
+                invalidNameErrorMsg = ""
+            }
+
+            if (price.isBlank()) {
+                invalidPriceErrorMsg = "El precio es requerido"
+                thereAreErrors = true
             } else if (price.toIntOrNull() == null) {
-                errorMsg = "El precio tiene que ser un entero válido"
-                Toast.makeText(context, "El precio tiene que ser un entero válido", Toast.LENGTH_SHORT).show()
-//                showErrorDialog = true
+                invalidPriceErrorMsg = "El precio tiene que ser un entero válido"
+                thereAreErrors = true
+            } else if (price.toIntOrNull()!! <= 0) {
+                invalidPriceErrorMsg = "El precio tiene que ser positivo"
+                thereAreErrors = true
+            }
+            else {
+                invalidPriceErrorMsg = ""
+            }
+
+            if (description.isBlank()) {
+                invalidDescriptionErrorMsg = "La descripción es requerida"
+                thereAreErrors = true
+            } else {
+                invalidDescriptionErrorMsg = ""
+            }
+
+            if (selectedDate.isBlank()) {
+                invalidDateErrorMsg = "La fecha es requerida"
+                thereAreErrors = true
+            } else {
+                invalidDateErrorMsg = ""
+            }
+
+            if (thereAreErrors) {
+                Toast.makeText(context, "Por favor, corrige los campos erróneos", Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.updateProduct(Producto(id = producto?.id!!, nombre = name, descripcion = description, precio = price.toInt(), fecha = selectedDate))
                 navController.navigate(ListaProductos)

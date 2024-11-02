@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -32,7 +33,7 @@ fun HomeView(navController: NavController, modifier: Modifier = Modifier) {
             Image(painter = painterResource(id = R.drawable.logo), contentDescription = "Logo", modifier = Modifier.size(100.dp))
             Text(text = "Productio", color = MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.displaySmall)
         }
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(36.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(36.dp)) {
             ExtendedFloatingActionButton(
                 text = { Text(text = "Productos", style = MaterialTheme.typography.titleMedium) },
                 onClick = {
@@ -40,7 +41,8 @@ fun HomeView(navController: NavController, modifier: Modifier = Modifier) {
                 },
                 icon = { Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Lista de productos") },
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.width(240.dp)
             )
             ExtendedFloatingActionButton(
                 text = { Text(text = "Presentación", style = MaterialTheme.typography.titleMedium) },
@@ -49,7 +51,8 @@ fun HomeView(navController: NavController, modifier: Modifier = Modifier) {
                 },
                 icon = { Icon(imageVector = Icons.Default.Face, contentDescription = "Presentacion") },
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.width(240.dp)
             )
         }
         Text(text = "Quiroz Osuna Luis Daniel", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)

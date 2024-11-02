@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -87,11 +88,11 @@ fun Puesto(puesto: String, modifier: Modifier = Modifier) {
 @Composable
 fun InformacionPrincipal(modifier: Modifier = Modifier) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically), modifier = modifier) {
-        Image(painter = painterResource(id = R.drawable.imagen_perfil), contentDescription = "Imagen perfil", modifier = Modifier
+        Image(painter = painterResource(id = R.drawable.imagen_perfil), contentDescription = "Imagen perfil",     contentScale = ContentScale.Crop, modifier = Modifier
             .clip(
                 RoundedCornerShape(12.dp)
             )
-            .width(240.dp))
+            .size(200.dp))
         Nombre(nombre = "Luis Daniel Quiroz Osuna")
         Puesto(puesto = "Desarrollador Backend")
     }
